@@ -1,7 +1,16 @@
-const { Client, MessageEmbed } = require('discord.js');
+const {
+    Client,
+    MessageEmbed
+} = require('discord.js');
 
 const token = require('./token');
-const { devName, inviteLink, prefix, commands, color } = require('./constants');
+const {
+    devName,
+    inviteLink,
+    prefix,
+    commands,
+    color
+} = require('./constants');
 
 const fs = require('fs');
 const path = require('path');
@@ -21,11 +30,20 @@ const processedCommands = commands.map(command => {
     }
 })
 
-let servers = {};
-let helpEmbed = new MessageEmbed();
-let listEmbed = new MessageEmbed();
-let inviteEmbed = new MessageEmbed();
+const formatEmbed = (embed) => {
+    return embed
+        .setAuthor(
+            botName,
+            bot.user.avatarURL(),
+            inviteLink)
+        .setColor(color)
+}
 
+let servers = {};
+let helpEmbed = formatEmbed(new MessageEmbed());
+let listEmbed = formatEmbed(new MessageEmbed()).setTitle('Available Sounds');
+
+updateHelpEmbed();
 
 fileLoader();
 
@@ -37,11 +55,13 @@ bot.on('ready', () => {
     console.log(`${botName} | ${bot.guilds.cache.array().length} servers`);
 
     const setActivity = () => {
-         bot.user.setActivity(prefix + 'help', {
-             type: 'LISTENING'
-         });
+        bot.user.setActivity(prefix + 'help', {
+            type: 'LISTENING'
+        });
     }
+
     setActivity();
+
     setInterval(() => {
         setActivity()
     }, 3600000);
@@ -50,28 +70,6 @@ bot.on('ready', () => {
         servers[server.id] = true;
         console.log(server.name);
     })
-
-    createHelpEmbed();
-
-    listEmbed
-        .setColor(color)
-        .setTitle('Available Sounds')
-        .setAuthor(
-            botName,
-            bot.user.avatarURL(),
-            inviteLink
-        );
-
-    inviteEmbed
-        .setColor(color)
-        .setTitle(inviteLink)
-        .setURL(inviteLink)
-        .setAuthor(
-            botName,
-            bot.user.avatarURL(),
-            inviteLink
-        )
-        .setDescription(`\n\n Developer: \`${devName}\``);
 
     setInterval(fileLoader, 60000);
 });
@@ -121,9 +119,8 @@ bot.on('message', (msg) => {
         }
 
     } else if (command === 'invite') {
-        msg.channel.send(inviteEmbed.setFooter(`Requested by ${msg.author.tag}`, msg.author.avatarURL()).setTimestamp());
+        msg.reply(inviteLink);
     }
-
 });
 
 function fileLoader() {
@@ -141,19 +138,13 @@ function fileLoader() {
     });
 }
 
-function createHelpEmbed() {
+function updateHelpEmbed() {
     let descriptionText = '';
     for (let command of processedCommands) {
         descriptionText += `\`${command.name} :\`  ${command.desc}\n\n`
     }
     descriptionText += `\n\n Developer: \`${devName}\``;
     helpEmbed
-        .setColor(color)
         .setTitle('Commands')
-        .setAuthor(
-            botName,
-            bot.user.avatarURL(),
-            inviteLink
-        )
         .setDescription(descriptionText);
 }
