@@ -1,0 +1,28 @@
+{
+  "name": "discord-audio-bot-template",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mehmetmalli/discord-audio-bot-template.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "discord.js": "^12.1.1",
+    "node-opus": "^0.3.3"
+  },
+  "bugs": {
+    "url": "https://github.com/mehmetmalli/discord-audio-bot-template/issues"
+  },
+  "homepage": "https://github.com/mehmetmalli/discord-audio-bot-template#readme",
+  "devDependencies": {
+    "nodemon": "^2.0.12"
+  }
+}
