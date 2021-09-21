@@ -71,7 +71,7 @@ bot.on('ready', () => {
             bot.user.avatarURL(),
             inviteLink
         )
-        .setDescription(`\n\n Developers: \`${devName}\``);
+        .setDescription(`\n\n Developer: \`${devName}\``);
 
     setInterval(fileLoader, 60000);
 });
@@ -136,7 +136,7 @@ function fileLoader() {
         audioFiles.forEach(function (name) {
             let filename = name.split('.mp3')[0];
             listDescriptionText += `\`${prefix}${filename}\`\n\n`;
-            listEmbed.setDescription(listDescriptionText + `\n\n Geliştirici: \`${devName}\``);
+            listEmbed.setDescription(listDescriptionText + `\n\n Developer: \`${devName}\``);
         });
     });
 }
