@@ -14,13 +14,16 @@ const {
 
 const fs = require('fs');
 const path = require('path');
+const { log } = require('console');
 
-const audioFilesFolder = path.join(__dirname, 'audio');
+const audioFilesFolder = path.join(__dirname, '../audio');
 const bot = new Client();
 
 let audioFiles = [];
 let botName = '';
 let command = '';
+let listEmbed;
+let helpEmbed;
 let listDescriptionText = '';
 
 const processedCommands = commands.map(command => {
@@ -40,12 +43,6 @@ const formatEmbed = (embed) => {
 }
 
 let servers = {};
-let helpEmbed = formatEmbed(new MessageEmbed());
-let listEmbed = formatEmbed(new MessageEmbed()).setTitle('Available Sounds');
-
-updateHelpEmbed();
-
-fileLoader();
 
 bot.login(token);
 
@@ -70,6 +67,12 @@ bot.on('ready', () => {
         servers[server.id] = true;
         console.log(server.name);
     })
+
+    helpEmbed = formatEmbed(new MessageEmbed()).setTitle('Commands');
+    updateHelpEmbed();
+    
+    listEmbed = formatEmbed(new MessageEmbed()).setTitle('Available Sounds');
+    fileLoader();
 
     setInterval(fileLoader, 60000);
 });
@@ -130,8 +133,9 @@ function fileLoader() {
         }
         listDescriptionText = '';
 
-        audioFiles.forEach(function (name) {
+        files.forEach(function (name) {
             let filename = name.split('.mp3')[0];
+            audioFiles.push(name)
             listDescriptionText += `\`${prefix}${filename}\`\n\n`;
             listEmbed.setDescription(listDescriptionText + `\n\n Developer: \`${devName}\``);
         });
@@ -144,7 +148,5 @@ function updateHelpEmbed() {
         descriptionText += `\`${command.name} :\`  ${command.desc}\n\n`
     }
     descriptionText += `\n\n Developer: \`${devName}\``;
-    helpEmbed
-        .setTitle('Commands')
-        .setDescription(descriptionText);
+    helpEmbed.setDescription(descriptionText);
 }
