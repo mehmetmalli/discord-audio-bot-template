@@ -14,12 +14,11 @@ const {
 
 const fs = require('fs');
 const path = require('path');
-const { log } = require('console');
 
 const audioFilesFolder = path.join(__dirname, '../audio');
 const bot = new Client();
 
-let audioFiles = [];
+let audioFiles = new Set();
 let botName = '';
 let command = '';
 let listEmbed;
@@ -101,7 +100,7 @@ bot.on('message', (msg) => {
     } else if (command === 'list') {
         msg.channel.send(listEmbed.setFooter(`Requested by ${msg.author.tag}`, msg.author.avatarURL()).setTimestamp());
 
-    } else if (audioFiles.includes(command + ".mp3")) {
+    } else if (audioFiles.has(command)) {
         if (servers[msg.guild.id]) {
             let vc = msg.member.voice.channel;
             if (!vc) {
@@ -113,6 +112,7 @@ bot.on('message', (msg) => {
                     servers[msg.guild.id] = false;
                     con.play(`${audioFilesFolder}/${command}.mp3`).on("finish", () => {
                         servers[msg.guild.id] = true;
+                        vc.leave();
                     })
                 })
                 .catch(console.error);
@@ -135,7 +135,7 @@ function fileLoader() {
 
         files.forEach(function (name) {
             let filename = name.split('.mp3')[0];
-            audioFiles.push(name)
+            audioFiles.add(name)
             listDescriptionText += `\`${prefix}${filename}\`\n\n`;
             listEmbed.setDescription(listDescriptionText + `\n\n Developer: \`${devName}\``);
         });
